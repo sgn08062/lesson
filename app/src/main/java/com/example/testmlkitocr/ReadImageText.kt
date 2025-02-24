@@ -7,16 +7,10 @@ import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 class ReadImageText {
-
     // 한국어 및 라틴 문자(영어) OCR을 위한 Recognizer
     private val recognizerKorean = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
     private val recognizerLatin = TextRecognition.getClient(TextRecognizerOptions.Builder().build())
 
-    /**
-     * 이미지에서 텍스트를 추출하는 함수
-     * @param image OCR을 수행할 Bitmap 이미지
-     * @param callback OCR 결과를 비동기적으로 반환하는 콜백 함수
-     */
     fun processImage(image: Bitmap, callback: (String) -> Unit) {
         val inputImage = InputImage.fromBitmap(image, 0)
 
