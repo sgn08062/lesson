@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             onCropComplete = { uri ->
                 processCroppedImage(uri) // 성공 시 크롭된 이미지 표시
             },
-            onCropFailed = { error ->
+            onCropFailed = { error -> // 실패 시 이미지 크롭 실패 메시지
                 error?.printStackTrace()
                 Toast.makeText(this, "이미지 크롭 실패: ${error?.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
