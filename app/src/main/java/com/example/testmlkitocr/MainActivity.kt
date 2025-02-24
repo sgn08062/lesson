@@ -35,6 +35,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun processCroppedImage(uri: Uri) {
+        ivImage.setImageDrawable(null)
+        ivImage.setImageURI(uri)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -71,11 +76,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun processCroppedImage(uri: Uri) {
-        ivImage.setImageDrawable(null)
-        ivImage.setImageURI(uri)
     }
 
     override fun onResume() {
