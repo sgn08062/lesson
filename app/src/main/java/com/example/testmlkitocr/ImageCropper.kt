@@ -35,7 +35,7 @@ class ImageCropper(
         }
         val cropIntent = UCrop.of(uri, destinationUri)
             .withOptions(options)
-            .withAspectRatio(1f, 1f)
+            //.withAspectRatio(1f, 1f)
             .getIntent(context)
 
         cropActivityResult.launch(cropIntent)
