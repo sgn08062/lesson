@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Insert Image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivSource" />
+        app:layout_constraintTop_toBottomOf="@id/ivSource"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnProp"
@@ -29,17 +30,18 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="Make OCR"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivSource" />
+        app:layout_constraintTop_toBottomOf="@id/ivSource"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
+    <!-- 기존의 TextView 대신 OCRImageTextView 사용 -->
+    <com.example.testmlkitocr.OCRImageTextView
         android:id="@+id/tvResult"
-        android:layout_width="303dp"
-        android:layout_height="432dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="48dp"
-        android:text="OCR Results"
+        android:layout_width="398dp"
+        android:layout_height="472dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="36dp"
+        android:background="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnAdd" />
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+</androidx.constraintlayout.widget.ConstraintLayout>

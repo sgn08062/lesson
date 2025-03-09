@@ -1,46 +1,62 @@
 package com.example.testmlkitocr
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.google.mlkit.vision.text.Text
+
+// OCR 결과를 텍스트와 좌표로 저장할 데이터 클래스
+data class OCRResult(val text: String, val boundingBox: Rect)
 
 class ReadImageText {
     // 한국어 및 라틴 문자(영어) OCR을 위한 Recognizer
     private val recognizerKorean = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
     private val recognizerLatin = TextRecognition.getClient(TextRecognizerOptions.Builder().build())
 
-    fun processImage(image: Bitmap, callback: (String) -> Unit) {
+    /**
+     * OCR 결과를 OCRResult 리스트(텍스트와 좌표)로 반환하는 함수
+     */
+    fun processImageWithCoordinates(image: Bitmap, callback: (List<OCRResult>) -> Unit) {
         val inputImage = InputImage.fromBitmap(image, 0)
-
-        // 한국어 인식기 우선 실행
         recognizerKorean.process(inputImage)
-            .addOnSuccessListener { text ->
-                if (text.text.isNotEmpty()) {
-                    callback(text.text) // 한국어 OCR 결과 반환
+            .addOnSuccessListener { result ->
+                val ocrResults = parseOCRResult(result)
+                if (ocrResults.isNotEmpty()) {
+                    callback(ocrResults)
                 } else {
-                    // 한국어 결과가 없으면 영어 OCR 실행
-                    processLatinText(inputImage, callback)
+                    processLatinTextWithCoordinates(inputImage, callback)
                 }
             }
             .addOnFailureListener {
-                // 한국어 인식이 실패하면 영어 OCR 실행
-                processLatinText(inputImage, callback)
+                processLatinTextWithCoordinates(inputImage, callback)
             }
     }
 
-    /**
-     * 영어 OCR 실행 (한국어가 없을 경우)
-     */
-    private fun processLatinText(image: InputImage, callback: (String) -> Unit) {
+    private fun processLatinTextWithCoordinates(image: InputImage, callback: (List<OCRResult>) -> Unit) {
         recognizerLatin.process(image)
-            .addOnSuccessListener { text ->
-                callback(text.text) // 영어 OCR 결과 반환
+            .addOnSuccessListener { result ->
+                val ocrResults = parseOCRResult(result)
+                callback(ocrResults)
             }
             .addOnFailureListener {
-                callback("OCR 실패") // OCR 실패 시 메시지 반환
+                callback(emptyList())
             }
+    }
+
+    // 텍스트 결과에서 각 라인의 텍스트와 bounding box를 추출
+    private fun parseOCRResult(textResult: Text): List<OCRResult> {
+        val results = mutableListOf<OCRResult>()
+        for (block in textResult.textBlocks) {
+            for (line in block.lines) {
+                line.boundingBox?.let { box ->
+                    results.add(OCRResult(line.text, box))
+                }
+            }
+        }
+        return results
     }
 
     // OCR이 끝난 후 메모리 해제

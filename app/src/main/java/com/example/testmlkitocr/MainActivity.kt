@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnAddImage: Button
     private lateinit var btnProcessImage: Button
     private lateinit var ivImage: ImageView
-    private lateinit var tvImageText: TextView
+    // tvResult를 OCRImageTextView로 사용
+    private lateinit var tvResult: OCRImageTextView
 
     private lateinit var readImageText: ReadImageText
     private lateinit var imageCropper: ImageCropper
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processCroppedImage(uri: Uri) {
+        // 크롭된 이미지를 ImageView에 표시
         ivImage.setImageDrawable(null)
         ivImage.setImageURI(uri)
     }
@@ -44,10 +45,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        ivImage = findViewById(R.id.ivSource)
         btnAddImage = findViewById(R.id.btnAdd)
         btnProcessImage = findViewById(R.id.btnProp)
-        ivImage = findViewById(R.id.ivSource)
-        tvImageText = findViewById(R.id.tvResult)
+        tvResult = findViewById(R.id.tvResult)  // OCRImageTextView
 
         readImageText = ReadImageText()
 
@@ -70,8 +71,11 @@ class MainActivity : AppCompatActivity() {
             val bitmap = (ivImage.drawable as? BitmapDrawable)?.bitmap
             bitmap?.let {
                 lifecycleScope.launch {
-                    readImageText.processImage(it) { result ->
-                        tvImageText.text = result // OCR 결과 표시
+                    readImageText.processImageWithCoordinates(it) { ocrResults ->
+                        // tvResult에 크롭한 이미지와 OCR 결과(텍스트, 좌표, 텍스트 사이즈)를 설정
+                        // 예시로 tvResult에 설정된 기본 텍스트 사이즈를 그대로 사용하거나 원하는 값으로 전달 가능
+                        val currentTextSize = tvResult.overlayTextSize
+                        tvResult.setData(it, ocrResults, currentTextSize)
                     }
                 }
             }
