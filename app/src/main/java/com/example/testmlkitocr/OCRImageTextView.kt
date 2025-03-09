@@ -61,7 +61,7 @@ class OCRImageTextView @JvmOverloads constructor(
 
         // 각 OCR 결과에 대해, 텍스트 영역의 배경에 블러 처리된 사각형과 텍스트를 그림
         for (result in ocrResults) {
-            result.boundingBox?.let { box ->
+            result.boundingBox.let { box ->
                 // 배경 사각형 그리기 (boundingBox에 padding 추가)
                 canvas.drawRect(
                     box.left.toFloat() - padding,
